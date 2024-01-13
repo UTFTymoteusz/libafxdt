@@ -4,6 +4,7 @@ OPTIM := 3
 FREE  := false # freestanding
 NOSTD := false # nostdlib
 BARE  := true # no exceptions, rtti, etc
+PIE   ?= false # pie, pic
 DEBUG ?= true # debug
 TRACE ?= true # allow stack tracing
 LIBS  := 
@@ -18,7 +19,7 @@ else
 endif
 
 ROOT     ?= $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
-BUILD    := ./build/
+BUILD    := $(ROOT)/build/
 BIN      := $(BUILD)$(NAME)/
 DEP_DEST := $(BIN)dep/
 OBJ_DEST := $(BIN)obj/
@@ -38,25 +39,29 @@ LINKS := $(foreach lib,$(LIBS),./build/$(lib)/$(lib).a )
 
 CXXFLAGS += -O$(OPTIM) -Wall -Wextra -pipe -lgcc $(INCLUDES)
 
-ifeq ($(FREE), true)
+ifeq ($(strip $(FREE)), true)
 	CXXFLAGS += -ffreestanding
 endif
 
-ifeq ($(NOSTD), true)
+ifeq ($(strip $(NOSTD)), true)
 	CXXFLAGS += -nostdlib
 endif
 
-ifeq ($(DEBUG), true)
+ifeq ($(strip $(DEBUG)), true)
 	CXXFLAGS += -g
 endif
 
-ifeq ($(BARE), true)
+ifeq ($(strip $(BARE)), true)
 	CXXFLAGS += -fno-rtti
 	CXXFLAGS += -fno-exceptions
-	CXXFLAGS += -fno-pic
 endif
 
-ifeq ($(TRACE), true)
+ifneq ($(strip $(PIE)), true)
+	CXXFLAGS += -fno-pic
+	CXXFLAGS += -no-pie
+endif
+
+ifeq ($(strip $(TRACE)), true)
 	CXXFLAGS += -fno-stack-protector 
 	CXXFLAGS += -fno-omit-frame-pointer
 endif
@@ -69,7 +74,7 @@ all: $(OBJS)
 ifeq ($(TYPE), lib)
 	@$(AR) rcs -o $(BIN)$(NAME).a $(OBJS)
 else
-	@$(CXX) $(CXXFLAGS) $(LINKS) -o $(BIN)$(NAME) $(OBJS)
+	@$(CXX) $(CXXFLAGS) -o $(BIN)$(NAME) $(OBJS) $(LINKS)
 endif
 	@printf '\033[0;$(COLOR)m%s\033[0m: Done building \033[0;$(COLOR)m%s\033[0m\033[0K\n' $(NAME)
 

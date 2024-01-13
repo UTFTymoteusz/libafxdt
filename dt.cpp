@@ -91,7 +91,7 @@ namespace afx {
 
     bool fdt_childnode(fdt* fdt, fdt_node* node, fdt_node* parent, const char* name,
                        bool strict) {
-        be<u32>* ptr = parent->start + 1;
+        be<u32>* ptr = (be<u32>*) parent->start + 1;
 
         ptr += ((afxhost_strlen(parent->name) + 1) + 3) / 4;
 
@@ -110,7 +110,7 @@ namespace afx {
 
                 if (strcmp_lenient(node_name, name) == 0) {
                     node->owner = fdt;
-                    node->start = ptr;
+                    node->start = (void*) ptr;
                     node->name  = (const char*) (ptr + 1);
 
                     return true;
@@ -127,7 +127,7 @@ namespace afx {
     }
 
     bool fdt_firstnode(fdt* fdt, fdt_node* dest_node, fdt_node* parent) {
-        be<u32>* ptr = parent->start;
+        be<u32>* ptr = (be<u32>*) parent->start;
 
         ptr += afxhost_strlen(parent->name) / 4 + 1;
 
@@ -141,7 +141,7 @@ namespace afx {
 
             if (val == FDT_BEGIN_NODE) {
                 dest_node->owner = fdt;
-                dest_node->start = ptr;
+                dest_node->start = (void*) ptr;
                 dest_node->name  = (const char*) (ptr + 1);
 
                 return true;
@@ -154,7 +154,7 @@ namespace afx {
     }
 
     bool fdt_nextnode(fdt* fdt, fdt_node* dest_node, fdt_node* current) {
-        be<u32>* ptr = current->start;
+        be<u32>* ptr = (be<u32>*) current->start;
 
         ptr += node_size(ptr) + 1;
 
@@ -168,7 +168,7 @@ namespace afx {
 
             if (val == FDT_BEGIN_NODE) {
                 dest_node->owner = fdt;
-                dest_node->start = ptr;
+                dest_node->start = (void*) ptr;
                 dest_node->name  = (const char*) (ptr + 1);
 
                 return true;
@@ -181,7 +181,7 @@ namespace afx {
     }
 
     bool fdt_getprop(fdt* fdt, fdt_prop* prop, fdt_node* node, const char* name) {
-        be<u32>* ptr = node->start;
+        be<u32>* ptr = (be<u32>*) node->start;
 
         ptr += (afxhost_strlen(node->name) + 3) / 4 + 1;
 
@@ -195,7 +195,7 @@ namespace afx {
                 if (afxhost_strcmp(prop_name, name) == 0) {
                     prop->size  = ptr->get();
                     prop->name  = prop_name;
-                    prop->start = ptr - 1;
+                    prop->start = (void*) (ptr - 1);
 
                     return true;
                 }
