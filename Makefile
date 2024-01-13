@@ -1,6 +1,6 @@
 NAME  := libafxdt
 TYPE  := lib
-OPTIM := 3
+OPTIM := 0
 FREE  := false # freestanding
 NOSTD := false # nostdlib
 BARE  := true # no exceptions, rtti, etc
