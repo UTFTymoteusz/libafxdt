@@ -1,8 +1,8 @@
 NAME  := libafxdt
 TYPE  := lib
 OPTIM := 0
-FREE  := false # freestanding
-NOSTD := false # nostdlib
+FREE  := true # freestanding
+NOSTD := true # nostdlib
 BARE  := true # no exceptions, rtti, etc
 PIE   ?= false # pie, pic
 DEBUG ?= true # debug
@@ -66,7 +66,10 @@ ifeq ($(strip $(TRACE)), true)
 	CXXFLAGS += -fno-omit-frame-pointer
 endif
 
-submake = @$(MAKE) -C $(1) $(2)
+define submake
+	$(MAKE) -C $(1) $(2)
+
+endef
 
 all: $(OBJS)
 	$(foreach lib,$(LIBS),$(call submake, ./lib/$(lib), all))

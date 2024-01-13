@@ -139,13 +139,13 @@ namespace afx {
         do {
             if (strict) {
                 if (afxhost_strcmp(name, check.name) == 0) {
-                    memcpy(node, &check, sizeof(fdt_node));
+                    afxhost_memcpy(node, &check, sizeof(fdt_node));
                     return true;
                 }
             }
             else {
                 if (strcmp_lenient(name, check.name) == 0) {
-                    memcpy(node, &check, sizeof(fdt_node));
+                    afxhost_memcpy(node, &check, sizeof(fdt_node));
                     return true;
                 }
             }

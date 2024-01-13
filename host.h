@@ -8,4 +8,5 @@ namespace afx {
     extern "C" void  afxhost_free(void* mem);
     extern "C" usz   afxhost_strlen(const char* str);
     extern "C" int   afxhost_strcmp(const char* a, const char* b);
+    extern "C" void* afxhost_memcpy(void* dst, const void* src, usz size);
 }
