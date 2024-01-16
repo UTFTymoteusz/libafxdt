@@ -25,6 +25,7 @@ namespace afx {
         void*       start; // Pointer to the property's start.
         const char* name;  // Property name.
         usz         size;  // Property size.
+        void*       data;  // Pointer to the property's data.
     };
 
     /**

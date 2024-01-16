@@ -37,6 +37,7 @@ namespace afx {
         prop->start = ptr;
         prop->name  = (const char*) (fdt->strings + (ptr + 2)->get());
         prop->size  = (ptr + 1)->get();
+        prop->data  = (ptr + 3);
     }
 
     static void node_skipprops(be<u32>*& ptr) {
